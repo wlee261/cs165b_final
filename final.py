@@ -12,11 +12,11 @@ from sklearn.cluster import KMeans, MiniBatchKMeans
 from sklearn import svm
 from sklearn.metrics import accuracy_score
 from sklearn.decomposition import PCA
-import pandas as pd
+#import pandas as pd
 import time
 
 class Visual_BOW():
-    def __init__(self, k=20, dictionary_size=50):
+    def __init__(self, k=2, dictionary_size=200):
         self.k = k  # number of SIFT features to extract from every image
         self.dictionary_size = dictionary_size  # size of your "visual dictionary" (k in k-means)
         self.n_tests = 10  # how many times to re-run the same algorithm (to obtain average accuracy)
@@ -39,7 +39,7 @@ class Visual_BOW():
 
         #os.system(pip3 install --user pandas)
         
-        FILEPATH = "/Users/graceshin/Downloads/101_ObjectCategories/*"
+        #FILEPATH = "/Users/graceshin/Downloads/101_ObjectCategories/*"
         
         filenames = []
         images = []
@@ -48,7 +48,7 @@ class Visual_BOW():
         test_features = []
         test_labels = []
         rand = 0
-        filenames = glob.glob(FILEPATH)
+        filenames = glob.glob('101_ObjectCategores')
         
         for i in range(len(filenames)):
             images.append([])
@@ -60,14 +60,14 @@ class Visual_BOW():
         for x in range(len(images)):
             for y in range(len(images[x])-1):
                 rand = random.randint(0,100)
-                print(images[x][y])
+                #print(images[x][y])
                 img1 = cv2.imread(images[x][y])
                 gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
                 sift = cv2.xfeatures2d.SIFT_create()
                 (kp, descs) = sift.detectAndCompute(gray, None)
 
-                if descs is None:
-                    continue
+                '''if descs is None:
+                    continue'''
                 if (len(descs)>self.k):
                     descs = descs[0:self.k]
                     
@@ -197,7 +197,8 @@ class Visual_BOW():
             total = total + 1
 
         accuracy = correct/total
-        print(accuracy)
+
+        #print(accuracy)
         return accuracy
 
     def save_plot(self, features, labels):
@@ -212,7 +213,7 @@ class Visual_BOW():
             labels: list/array of size n_images
         '''
 
-        SAVEPATH = '/Users/graceshin/Downloads/plot.png'
+        #SAVEPATH = '/Users/graceshin/Downloads/plot.png'
 
         N = len(labels)
         
@@ -242,7 +243,12 @@ class Visual_BOW():
             colors.append('#%06X' %random.randint(0, 0xFFFFFF))
 
         plt.scatter(reduced_data[:,0], reduced_data[:,1], c = k, s = 5, cmap = mpl.colors.ListedColormap(colors))
-        plt.savefig(SAVEPATH)
+        plt.savefig('plot.png')
+
+        '''print(SAVEPATH)
+        print(self.k)
+        print(self.dictionary_size)
+        print(self.n_tests)'''
         
         
         
@@ -267,8 +273,7 @@ class Visual_BOW():
         return accuracy
 
 if __name__ == "__main__":
-    start_time = time.time()
     alg = Visual_BOW(k=20, dictionary_size=50)
     accuracy = alg.algorithm()
     print("Final accuracy of the model is:", accuracy)
-    print("--- %s seconds ---" % (time.time() - start_time))
+
